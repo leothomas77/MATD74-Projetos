@@ -1,4 +1,4 @@
-from PIL import Image
+﻿from PIL import Image
 import numpy as np
 import operator
 from random import randint
@@ -18,7 +18,7 @@ from random import randint
 p_type = [('c', int),('x', int),('y', int)]
 
 path = input("Insert path to image: ")
-im = Image.open(path).convert('L')
+im = Image.open(path).convert('L') # grayscale conversion
 
 K = input("Insert number of centroids (K): ")
 K = int(K)
@@ -48,12 +48,12 @@ sorted_k = np.sort(k_arr)
 
 j = 0
 for i in range(K):
-    if i != K-1:
+    if i < K - 1:
         medium = int((sorted_k[i] + sorted_k[i+1])/2)
     else:
         medium = sorted_k[i]
     iterate = True
-    while(iterate and i < dim):
+    while(iterate and j < dim):
         if sorted_arr[j]['c'] <= medium:
             sorted_arr[j]['c'] = medium
             j = j + 1
