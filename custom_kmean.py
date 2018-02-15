@@ -20,8 +20,25 @@ p_type = [('c', int),('x', int),('y', int)]
 path = input("Insert path to image: ")
 im = Image.open(path).convert('L') # grayscale conversion
 
-K = input("Insert number of centroids (K): ")
-K = int(K)
+k_list = []
+K = input("Insert number of centroids (K) or space to automatic detection of centroids: ")
+
+if K != " ":
+    K = int(K)
+    #randomize centroids
+    for i in range(K):
+        k_list.append(randint(0,255))
+else:
+    #color histogram based centroids
+    histogram = im.histogram()
+    max_frequence = max(histogram)
+    threshold = 0.9
+
+    for i, value in enumerate(histogram):
+        if (value >= max_frequence * threshold ):
+            k_list.append(i)
+    
+    K = len(k_list)
 
 #convert to grayscale and then to numpy array
 im_arr = np.array(im)
@@ -37,10 +54,6 @@ for x in range(0, rows):
 
 sorted_arr = np.sort(custom_arr, order='c')
 
-#randomize centroids
-k_list = []
-for i in range(K):
-    k_list.append(randint(0,255))
 
 #to np.array
 k_arr = np.array(k_list)
@@ -72,11 +85,3 @@ save_path = input("insert save path: ")
 seg = Image.fromarray(np.uint8(final))
 seg.save(save_path)
 seg.close()
-
-
-    
-
-
-
-
-
