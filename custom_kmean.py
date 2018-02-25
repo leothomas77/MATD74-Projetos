@@ -1,6 +1,5 @@
 ﻿from PIL import Image
 import numpy as np
-import operator
 from random import randint
 
 
@@ -25,21 +24,21 @@ K = input("Insert number of centroids (K) or space to automatic detection of cen
 
 if K != " ":
     K = int(K)
-    #randomize centroids
-    for i in range(K):
-        k_list.append(randint(0,255))
+    k_list = np.empty(K)
 else:
     #color histogram based centroids
     histogram = im.histogram()
-    max_frequence = max(histogram)
-    threshold = 0.9
+    max_frequence = np.amax(histogram)
+    threshold = 0.5
+    print ("Max is:", max_frequence)
+    print ("Min is:", np.amin(histogram))
 
     for i, value in enumerate(histogram):
         if (value >= max_frequence * threshold ):
-            k_list.append(i)
+            k_list.append(value)
     
     K = len(k_list)
-
+    print ("Automatic generated K is:", K)
 #convert to grayscale and then to numpy array
 im_arr = np.array(im)
 rows, cols = im_arr.shape
@@ -53,7 +52,12 @@ for x in range(0, rows):
         custom_arr[x * cols + y] = (im_arr[x, y], x, y)
 
 sorted_arr = np.sort(custom_arr, order='c')
+minColor = sorted_arr[0]['c']
+maxColor = sorted_arr[len(sorted_arr) - 1]['c']
 
+#randomize centroids with values between minColor and maxColor
+for i in range(K):
+	k_list[i] = np.random.uniform(minColor, maxColor)
 
 #to np.array
 k_arr = np.array(k_list)
